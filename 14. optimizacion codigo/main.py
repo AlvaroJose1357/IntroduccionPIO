@@ -1,4 +1,5 @@
 import os
+from tabulate import tabulate
 productos = [{
   "nombre": "Laptop",
   "precio": 3000000.00,
@@ -73,11 +74,14 @@ def ver_carrito():
   if not carrito:
     print("Carrito vacío")
   else:
-    # headers = ["ID","Nombre", "Cantidad", "Precio"]
-    # rows = [[i + 1, item['nombre'], item['cantidad'], item['precio']] for i, item in enumerate(carrito)]
-    # print(tabulate(rows, headers, tablefmt="github"))
-    carrito_info = [f"Nombre: {item['nombre']} Cantidad: {item['cantidad']} Precio: {item['precio']}" for item in carrito]
-    print("\n".join(carrito_info))
+    headers = ["ID","Nombre", "Cantidad", "Precio"]
+    rows = []
+    for i, item in enumerate(carrito):
+      precioFormateado = "{:,.0f}".format(item['precio'])
+      rows.append([[i + 1, item['nombre'], item['cantidad'], precioFormateado]])
+    print(tabulate(rows, headers, tablefmt="github"))
+    # carrito_info = [f"Nombre: {item['nombre']} Cantidad: {item['cantidad']} Precio: {item['precio']}" for item in carrito]
+    # print("\n".join(carrito_info))
     # for item in carrito:
     #   print(f"Nombre: {item['nombre']} Cantidad: {item['cantidad']} Precio: {item['precio']}")
 
@@ -153,37 +157,42 @@ def main():
     print("5. Vaciar carrito")
     print("6. Comprar productos")
     print("7. Salir")
-    opcion = int(input("Ingrese la opcion:\n"))
-    limpiarTerminal()
-    if opcion == 1:
-      ver_productos()
+    try:
+      opcion = int(input("Ingrese la opcion:\n"))
+      limpiarTerminal()
+      if opcion == 1:
+        ver_productos()
+        input("Enter para continuar")
+        limpiarTerminal()
+      elif opcion == 2:
+        ver_carrito()
+        input("Enter para continuar")
+        limpiarTerminal()
+      elif opcion == 3:
+        print("-------------------------Agregando productos al carrito-------------------------")
+        nombre = input("Ingrese el nombre del producto:\n")
+        cantidad = int(input("Ingrese la cantidad del producto:\n"))
+        add_productosCarrito(nombre, cantidad)
+        ver_carrito()
+        input("Enter para continuar")
+        limpiarTerminal()
+      elif opcion == 4:
+        nombre = input("Ingrese el nombre del producto a eliminar:\n")
+        remove_productosCarrito(nombre)
+        ver_carrito()
+        input("Enter para continuar")
+        limpiarTerminal()
+      elif opcion == 5:
+        vaciarCarrito()
+      elif opcion == 6:
+        comprar_Productos()
+      elif opcion == 7:
+        print("Espero verte pronto!!!")
+        break
+      else:
+        print("Opcion invalida")
+    except ValueError:
+      print("Error: Dato ingresado no Válido")
       input("Enter para continuar")
       limpiarTerminal()
-    elif opcion == 2:
-      ver_carrito()
-      input("Enter para continuar")
-      limpiarTerminal()
-    elif opcion == 3:
-      print("-------------------------Agregando productos al carrito-------------------------")
-      nombre = input("Ingrese el nombre del producto:\n")
-      cantidad = int(input("Ingrese la cantidad del producto:\n"))
-      add_productosCarrito(nombre, cantidad)
-      ver_carrito()
-      input("Enter para continuar")
-      limpiarTerminal()
-    elif opcion == 4:
-      nombre = input("Ingrese el nombre del producto a eliminar:\n")
-      remove_productosCarrito(nombre)
-      ver_carrito()
-      input("Enter para continuar")
-      limpiarTerminal()
-    elif opcion == 5:
-      vaciarCarrito()
-    elif opcion == 6:
-      comprar_Productos()
-    elif opcion == 7:
-      print("Espero verte pronto!!!")
-      break
-    else:
-      print("Opcion invalida")
 main()
