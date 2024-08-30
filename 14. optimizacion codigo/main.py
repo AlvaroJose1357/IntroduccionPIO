@@ -114,8 +114,28 @@ def add_productosCarrito(nombre, cantidad):
   #       print("No hay suficiente stock")
   #     break
 
-def remove_productosCarrito():
-  pass
+def remove_productosCarrito(nombre):
+  if not carrito:
+    print("Carrito vacío")
+  else:
+    itemCarrito = next((c for c in carrito if c['nombre'] == nombre), None)
+    producto = next((p for p in productos if p['nombre'] == nombre), None)
+    if itemCarrito:
+      producto['stock'] += itemCarrito['cantidad']
+      carrito.remove(itemCarrito)
+      print("Producto eliminado del carrito")
+    else:
+      print("Producto no encontrado en el carrito")
+  # for item in carrito:
+  #   if item['nombre'] == nombre:
+  #     producto = next((p for p in productos if p['nombre'] == nombre), None)
+  #     producto['stock'] += item['cantidad']
+  #     carrito.remove(item)
+  #     print("Producto eliminado del carrito")
+  #     break
+  # else:
+  #   print("Producto no encontrado en el carrito")
+  
 
 def vaciarCarrito():
   carrito.clear()
@@ -145,13 +165,14 @@ def main():
       limpiarTerminal()
     elif opcion == 3:
       print("-------------------------Agregando productos al carrito-------------------------")
-      nombre = input("Ingrese su nombre:\n")
-      cantidad = int(input("Ingrese la cantidad de productos:\n"))
+      nombre = input("Ingrese el nombre del producto:\n")
+      cantidad = int(input("Ingrese la cantidad del producto:\n"))
       add_productosCarrito(nombre, cantidad)
       ver_carrito()
       input("Enter para continuar")
       limpiarTerminal()
     elif opcion == 4:
+      nombre = input("Ingrese el nombre del producto a eliminar:\n")
       remove_productosCarrito(nombre)
       ver_carrito()
       input("Enter para continuar")
