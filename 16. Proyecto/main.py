@@ -49,7 +49,7 @@ carrito = []
 def limpiarTerminal():
     if os.name == 'nt': os.system('cls') #Windows
     else: os.system('clear') #Linux o Mac
-    
+
 def listProduct():
   # for i, producto in enumerate(productos):
   #   if name.lower() in producto["nombre"].lower():
@@ -163,11 +163,17 @@ def finishBuy():
       print("\nCompra finalizada. Gracias por su compra. Disfruta de tus productos")
     else:
       print("Operación cancelada")
+  seguirComprando = input("¿Desea seguir comprando? (s/n): ").lower()
+  if seguirComprando == "s":
+    carrito.clear()
+    limpiarTerminal()
+  else:
+    print("Gracias por su compra")
 
 def continuar():
   input("Enter para continuar........")
   limpiarTerminal()
-  
+
 def show_loading():
     total_steps = 50  # Número de pasos en la barra de carga
     barras = itertools.cycle(['|', '/', '-', '\\'])  # Ciclo infinito de barras deslizantes
@@ -182,6 +188,7 @@ def show_loading():
 
 def main():
   while True:
+    limpiarTerminal()
     print("------------------------- E-Commerce Joyas y Relojes -------------------------")
     print("1. Ver productos")
     print("2. Agregar producto al carrito")
@@ -191,43 +198,40 @@ def main():
     print("6. Finalizar compra")
     print("7. Salir")
     try:
-      opcion = int(input("Ingrese una opción: "))
-      if opcion == 1:
-        listProduct()
-        continuar()
-      elif opcion == 2:
-        name = input("Ingrese el name del producto: ").lower()
-        cant = int(input("Ingrese la cantidad: "))
-        addProduct_Cart(name, cant)
-        continuar()
-      elif opcion == 3:
-        name = input("Ingrese el nombre del producto a actualizar: ").lower()
-        cant = int(input("Ingrese la nueva cantidad: "))
-        updateCart(name, cant)
-        continuar()
-      elif opcion == 4:
-        name = input("Ingrese el nombre del producto a eliminar: ").lower()
-        removeProduct(name)
-        continuar()
-      elif opcion == 5:
-        viewCart()
-        continuar()
-      elif opcion == 6:
-        finishBuy()
-        seguirComprando = input("¿Desea seguir comprando? (s/n): ").lower()
-        if seguirComprando == "s":
-          carrito.clear()
-          limpiarTerminal()
-        else:
-          print("Gracias por su compra")
-          break
-      elif opcion == 7:
-        print("Saliendo del programa...")
+      opciones = {
+        # se utilizan las lambdas por la necesidad de que se ejecute 2 funciones en una sola opción
+        1: listProduct,
+        2: lambda:(
+          listProduct(),
+          addProduct_Cart(input("Ingrese el nombre del producto: ").lower(), int(input("Ingrese la cantidad: ")))
+        ),
+        3: lambda:(
+          viewCart(),
+          updateCart(input("Ingrese el nombre del producto a actualizar: ").lower(), int(input("Ingrese la nueva cantidad: ")))
+        ),
+        4: lambda:(
+          viewCart(),
+          removeProduct(input("Ingrese el nombre del producto a eliminar: ").lower())
+        ),
+        5: viewCart,
+        6: finishBuy,
+      }
+      seleccion = int(input("Ingrese una opción: "))
+
+      if seleccion in opciones:
+        opciones[seleccion]()
+        input("Enter para continuar.......")
+      elif seleccion == 7:
+        print("Saliendo del programa...Nos vemos pronto")
         break
       else:
         print("Opción no válida")
+        input("Enter para continuar.......")
+    except ValueError:
+      print("Entrada inválida, por favor ingrese un número")
+      input("Enter para continuar.......")
     except Exception as e:
-      print("Se ha presentado el siguiente error en el programa principal", e)
-      continuar()
+      print(f"Se ha presentado un error: {e}")
+      input("Enter para continuar.......")
 
 main()
